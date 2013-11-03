@@ -5,7 +5,7 @@ AM_INIT_AUTOMAKE
 AC_PROG_CC
 
 # Check for the alsa sound library.
-AC_CHECK_LIB(asound)
+AC_CHECK_LIB(asound, asound)
 
-AC_CONFIG_FILES([Makefile, src/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT

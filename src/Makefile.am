@@ -3,7 +3,7 @@ bin_PROGRAMS = alsacap
 AM_LDFLAGS = -lasound
 
 # This is for building the man page.
-bin_SCRIPTS = alsacap.pod
+dist_bin_SCRIPTS = alsacap.pod
 man_MANS = alsacap.1
 
 alsacap.1: alsacap.pod
