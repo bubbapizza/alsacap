@@ -10,8 +10,8 @@ sampling rates, sampling formats, and min/max buffer & period sizes.
 
 ==== Notes about the package ====
 
-The man page for the alsacap program uses the pod2man command so you
-have to have that installed in order to generate it.
+To build this package, you need the libasound external library and
+the pod2man command.  The pod2man command builds the man page.
 
 Other than that, this is a normal autotools package.  To make the 
 distribution package run:
