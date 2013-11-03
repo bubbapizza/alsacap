@@ -400,6 +400,10 @@ void testconfig(snd_pcm_stream_t stream, const char *device, const int *hwpars)
 {
   unsigned min, max, param;
   int err, count, dir, result;
+  snd_pcm_uframes_t     period_size_min;
+  snd_pcm_uframes_t     period_size_max;
+  snd_pcm_uframes_t     buffer_size_min;
+  snd_pcm_uframes_t     buffer_size_max;
 
   printf("*** Exploring configuration space of device `%s' for %s ***\n", device,
      stream==SND_PCM_STREAM_CAPTURE? "recording" : "playback");
@@ -450,12 +454,31 @@ void testconfig(snd_pcm_stream_t stream, const char *device, const int *hwpars)
   snd_pcm_hw_params_get_rate_min(pars, &min, NULL);
   snd_pcm_hw_params_get_rate_max(pars, &max, NULL);
   if( min==max )
-    printf("Sampling rate %u Hz\nSample formats: ", min);
+    printf("Sampling rate %u Hz\n", min);
   else
-    printf("Sampling rate %u..%u Hz\nSample formats: ", min, max);
+    printf("Sampling rate %u..%u Hz\n", min, max);
+
+  /* Find and print out possible PCM formats. */
   snd_pcm_hw_params_get_format_mask(pars, fmask);
+  printf("    Sample formats: ");
   printfmtmask(fmask);
   printf("\n");
+
+  /* Find and print out min/max buffer and period sizes. */
+  err = snd_pcm_hw_params_get_buffer_size_min(
+     pars, &buffer_size_min);
+  err = snd_pcm_hw_params_get_buffer_size_max( 
+     pars, &buffer_size_max);
+  err = snd_pcm_hw_params_get_period_size_min(
+     pars, &period_size_min, NULL);
+  err = snd_pcm_hw_params_get_period_size_max(
+     pars, &period_size_max, NULL);
+
+  printf("    Buffer size range from %lu to %lu\n",
+         buffer_size_min, buffer_size_max);
+  printf("    Period size range from %lu to %lu\n",
+         period_size_min, period_size_max);
+
   result= snd_pcm_hw_params_get_sbits(pars);
   if( result >= 0 )    // only available if bit width of all formats is the same
     printf("Significant bits: %d\n", result);
