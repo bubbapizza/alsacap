@@ -1,0 +1,49 @@
+==== Notes about the alsacap program ====
+
+This is a simple autotools package for compiling and installing the 
+alsacap command.  The alsacap command was written by Volker Schatz.
+
+The alsacap command displays detailed information about the capabilities
+of each sound card installed in your system.  It shows allowable
+sampling rates, sampling formats, and min/max buffer & period sizes.
+
+
+==== Notes about autotools packages ====
+
+Autotools packages are super old school and work on just about every
+unix system known to mankind because the only thing you need to install
+one is a bourne shell.  
+
+In case you've never worked with them before, this package right here
+is the absolute simplest autotools package you could possibly find.   
+This whole package is built around ONE source code file.
+
+
+Here's a quick run down of how it works:
+
+If you see a file called 'bootstrap' in this directory, then you are 
+working with the developer's version of the package.   In that case,
+you must have the autoconf and automake packages installed, then 
+you have to run the following command:
+
+ ./bootstrap
+
+This will generate a 'configure' script and a Makefile.  Now you are at
+the point that a normal user would see if they had just extracted
+the distribution tarball.
+
+If you don't see a file called 'bootstrap' in this directory OR you
+have just run the above command, then run the following commands:
+
+ ./configure
+ make
+ sudo make install
+
+This will install the makeheaders command into /usr/local/bin and 
+you're all set to go.
+
+
+Shawn Wilson
+Nov 2013
+
+

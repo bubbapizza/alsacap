@@ -1,0 +1,104 @@
+
+=pod
+
+=head1 NAME
+
+alsacap - ALSA device capability lister
+
+
+=head1 SYNOPSIS
+
+B<alsacap> [B<-R>] [B<-C> I<cardnr> [B<-D> I<devicenr>]]
+
+B<alsacap> [B<-R>] B<-d> I<device> [B<-r> I<rate>|B<-c> I<channels>|B<-f> I<format>]...
+
+
+=head1 DESCRIPTION
+
+In the first form, scans soundcards known to ALSA for devices and subdevices.  
+The range of channels, sampling rates and sample formats of each device is
+output.  A list of subdevices is printed.  This information cannot be obtained
+if the device is in use; then only the number of available subdevices is
+printed.  Options for the first form of B<alsacap> usage allow to restrict the
+scan to a sound card or device and to scan recording devices.
+
+In the second form, displays ranges of configuration parameters for the given
+ALSA device.  The B<-d> option is mandatory in this form.  Its I<device name>
+argument denotes an ALSA device and is unrelated to the numerical sound card
+device ID of the B<-D> option.  To query the capabilities of a sound card (and
+its driver), use the hardware device designation C<hw:card>, where C<card> is
+the index or ID string of the sound card; or possibly C<hw:card,dev>, where
+C<dev> is the index of the sound card device.
+
+Up to three optional command-line switches can fix the rate, number of channels
+and sample format in the given order.  The actually obtained parameter value
+(which may differ from the one requested) and the remaining parameter ranges
+are output.  ALSA parameters are not independent, but the range of one may
+depend on the value of another.  B<alsacap> in its second form allows to
+explore these dependencies.  If unique, the number of significant bits of the
+sample values is also output, but be aware that this numer may overstate the
+number of bits used by the sound card DAC or provided by the ADC.
+
+
+=head1 OPTIONS
+
+=over
+
+=item B<-C> I<cardnr>
+
+Restrict scan to sound card with index I<cardnr>.
+
+=item B<-D> I<devicenr>
+
+Restrict scan to device with index I<devicenr>.  The B<-C> option has to be
+present also if B<-D> is used.
+
+=item B<-R>
+
+Operate on recording rather than playback devices.
+
+=item B<-c> I<channels>
+
+Set numer of channels before determining parameter ranges.
+
+=item B<-d> I<device>
+
+Display parameter ranges of the ALSA device I<device>.  The ALSA devices
+used here are distinct from the device indices of the B<-D> option that are
+subdivisions of sound cards.  With B<-d>, software devices performing
+resampling or mixing can also be used.  To show the capabilities of your sound
+card hardware (in so far as supported by the ALSA driver), use the argument
+C<hw:card>, where C<card> is the index or ID string of your sound card.
+
+=item B<-f> I<format>
+
+Set sample format before determining parameter ranges.  The sample format
+determines the size and endianness of sample values.  To see the available
+format designations, run B<alsacap> without B<-f> first.
+
+=item B<-r> I<rate>
+
+Set sampling rate before determining parameter ranges.
+
+=back
+
+
+=head1 SEE ALSO
+
+aplay(1) and arecord(1), in particular the I<-l> option.
+
+L<http://www.volkerschatz.com/noise/alsa.html> on ALSA devices, parameters,
+configuration and nomenclature.
+
+
+=head1 COPYRIGHT
+
+B<alsacap> is copyright (c) 2007 Volker Schatz, e-mail alsacap at the domain
+volkerschatz.com.  It is licenced under the ISC licence, a permissive
+open-source licence.  This manual page is (c) 2013 Volker Schatz and is under
+the same licence.
+
+=cut
+
+pod2man -c "General Commands Manual" -r "" alsacap.pod > alsacap.1
+
