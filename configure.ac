@@ -1,8 +1,11 @@
-AC_INIT(makeheaders, 1.0)
+AC_INIT(alsacap, 1.0)
 AM_INIT_AUTOMAKE
 
 # Set the CC command.
 AC_PROG_CC
+
+# Check for the alsa sound library.
+AC_CHECK_LIB(asound)
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

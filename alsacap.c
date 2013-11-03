@@ -15,8 +15,13 @@
  * CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * compile with: gcc -o alsacap alsacap.c -lasound
-*/
+ *
+ * This program was originally written by Volker Schatz.  Shawn Wilson
+ * bundled it into an autotools package and cut and pasted some code 
+ * from the alsa speaker-test command to display min/max buffer and 
+ * period sizes.
+ * 
+ */
 
 
 /*============================================================================
