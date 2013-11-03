@@ -1,11 +1,26 @@
-==== Notes about the alsacap program ====
+This is an autotools package for the alsacap command.  It was originally
+written by Volker Schatz and it shows the capabilities of alsa devices.
 
-This is a simple autotools package for compiling and installing the 
-alsacap command.  The alsacap command was written by Volker Schatz.
+Here some sample output:
 
-The alsacap command displays detailed information about the capabilities
-of each sound card installed in your system.  It shows allowable
-sampling rates, sampling formats, and min/max buffer & period sizes.
+sysadmin@laptop:~$ alsacap
+*** Scanning for playback devices ***
+Card 0, ID `ICH5', name `Intel ICH5'
+  Device 0, ID `Intel ICH', name `Intel ICH5', 1 subdevices (1 available)
+    2 channels, sampling rate 8000..48000 Hz
+    Sample formats: S16_LE, S32_LE
+    Buffer size range from 4 to 16384
+    Period size range from 4 to 16384
+
+      Subdevice 0, name `subdevice #0'
+  Device 4, ID `Intel ICH - IEC958', name `Intel ICH5 - IEC958', 1 subdevices (1 available)
+    2 channels, sampling rate 48000..48000 Hz
+    Sample formats: S16_LE
+    Buffer size range from 8 to 16384
+    Period size range from 8 to 16384
+
+      Subdevice 0, name `subdevice #0'
+
 
 
 ==== Notes about the package ====
