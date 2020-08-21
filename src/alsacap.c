@@ -1,12 +1,12 @@
 /*
  * ALSA parameter test program
- * 
+ *
  * Copyright (c) 2007 Volker Schatz (alsacap at the domain volkerschatz.com)
- * 
+ *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
- * copyright notice and this permission notice appear in all copies. 
- * 
+ * copyright notice and this permission notice appear in all copies.
+ *
  * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
  * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
@@ -17,10 +17,10 @@
  *
  *
  * This program was originally written by Volker Schatz.  Shawn Wilson
- * bundled it into an autotools package and cut and pasted some code 
- * from the alsa speaker-test command to display min/max buffer and 
+ * bundled it into an autotools package and cut and pasted some code
+ * from the alsa speaker-test command to display min/max buffer and
  * period sizes.
- * 
+ *
  */
 
 
@@ -28,6 +28,7 @@
             Includes
 ============================================================================*/
 
+#include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <alsa/asoundlib.h>
@@ -85,6 +86,7 @@ void tc_errcheck(int retval, const char *doingwhat);
 const char *alsaerrstr(const int errcode);
 const char *dirstr(int dir);
 
+int parse_alsaformat(const char *fmtstr);
 int parse_alsaformats(const char *fmtstr);
 const char *alsafmtstr(int fmtnum);
 
@@ -246,7 +248,7 @@ void scancards(snd_pcm_stream_t stream, int thecard, int thedev)
   snd_pcm_uframes_t     buffer_size_max;
 
 
-  printf("*** Scanning for %s devices", 
+  printf("*** Scanning for %s devices",
          stream == SND_PCM_STREAM_CAPTURE? "recording" : "playback");
   if( thecard >= 0 )
      printf(" on card %d", thecard);
@@ -275,7 +277,7 @@ void scancards(snd_pcm_stream_t stream, int thecard, int thedev)
       snd_ctl_close(handle);
       goto nextcard;
     }
-    printf("Card %d, ID `%s', name `%s'\n", 
+    printf("Card %d, ID `%s', name `%s'\n",
            card, snd_ctl_card_info_get_id(info),
            snd_ctl_card_info_get_name(info));
     if( thedev >= 0 )
@@ -294,12 +296,12 @@ void scancards(snd_pcm_stream_t stream, int thecard, int thedev)
       snd_pcm_info_set_stream(pcminfo, stream);
       err= snd_ctl_pcm_info(handle, pcminfo);
 
-      if( thedev<0 && err == -ENOENT ) 
+      if( thedev<0 && err == -ENOENT )
          goto nextdev;
-      if( sc_errcheck(err, "obtaining device info", card, dev) ) 
+      if( sc_errcheck(err, "obtaining device info", card, dev) )
          goto nextdev;
       nsubd= snd_pcm_info_get_subdevices_count(pcminfo);
-      if( sc_errcheck(nsubd, "obtaining device info", card, dev) ) 
+      if( sc_errcheck(nsubd, "obtaining device info", card, dev) )
          goto nextdev;
 
       printf(
@@ -318,11 +320,11 @@ void scancards(snd_pcm_stream_t stream, int thecard, int thedev)
       snd_pcm_hw_params_get_channels_min(pars, &min);
       snd_pcm_hw_params_get_channels_max(pars, &max);
       if( min == max )
-         if( min == 1 )   
+         if( min == 1 )
             printf("    1 channel, ");
-         else      
+         else
             printf("    %d channels, ", min);
-      else      
+      else
          printf("    %u..%u channels, ", min, max);
 
       /* Find and print out min/max sampling rates. */
@@ -339,7 +341,7 @@ void scancards(snd_pcm_stream_t stream, int thecard, int thedev)
       /* Find and print out min/max buffer and period sizes. */
       err = snd_pcm_hw_params_get_buffer_size_min(
          pars, &buffer_size_min);
-      err = snd_pcm_hw_params_get_buffer_size_max( 
+      err = snd_pcm_hw_params_get_buffer_size_max(
          pars, &buffer_size_max);
       err = snd_pcm_hw_params_get_period_size_min(
          pars, &period_size_min, NULL);
@@ -359,10 +361,10 @@ void scancards(snd_pcm_stream_t stream, int thecard, int thedev)
       for( subd= 0; subd< nsubd; ++subd ) {
          snd_pcm_info_set_subdevice(pcminfo, subd);
          err= snd_ctl_pcm_info(handle, pcminfo);
-         if( sc_errcheck(err, "obtaining subdevice info", card, dev) ) 
+         if( sc_errcheck(err, "obtaining subdevice info", card, dev) )
             goto nextdev;
 
-         printf("      Subdevice %d, name `%s'\n", 
+         printf("      Subdevice %d, name `%s'\n",
                 subd, snd_pcm_info_get_subdevice_name(pcminfo));
       }
 
@@ -412,7 +414,7 @@ void testconfig(snd_pcm_stream_t stream, const char *device, const int *hwpars)
   err= snd_pcm_hw_params_any(pcm, pars);
   tc_errcheck(err, "initialising hardware parameters");
   for( count= 0; hwpars[count]!=HWP_END; count += 2 )
-    
+
     switch(hwpars[count])
     {
       case HWP_RATE:param= hwpars[count+1];
@@ -467,7 +469,7 @@ void testconfig(snd_pcm_stream_t stream, const char *device, const int *hwpars)
   /* Find and print out min/max buffer and period sizes. */
   err = snd_pcm_hw_params_get_buffer_size_min(
      pars, &buffer_size_min);
-  err = snd_pcm_hw_params_get_buffer_size_max( 
+  err = snd_pcm_hw_params_get_buffer_size_max(
      pars, &buffer_size_max);
   err = snd_pcm_hw_params_get_period_size_min(
      pars, &period_size_min, NULL);
@@ -634,5 +636,3 @@ void printfmtmask(const snd_pcm_format_mask_t *fmask)
   if( !prevformat )
     printf("(none)");
 }
-
-
