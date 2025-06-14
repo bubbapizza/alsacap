@@ -33,6 +33,7 @@
 #include <alsa/asoundlib.h>
 #include <errno.h>
 #include <string.h>
+#include <ctype.h>
 
 
 /*============================================================================
@@ -85,7 +86,7 @@ void tc_errcheck(int retval, const char *doingwhat);
 const char *alsaerrstr(const int errcode);
 const char *dirstr(int dir);
 
-int parse_alsaformats(const char *fmtstr);
+int parse_alsaformat(const char *fmtstr);
 const char *alsafmtstr(int fmtnum);
 
 void printfmtmask(const snd_pcm_format_mask_t *fmask);
